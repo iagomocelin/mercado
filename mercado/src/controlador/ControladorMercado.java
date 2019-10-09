@@ -30,19 +30,35 @@ public class ControladorMercado {
             JOptionPane.showMessageDialog(null, "Erro!");
         }
     }
-    
-      public static boolean alterar(Mercado objeto) {
-        String sql = "UPDATE mercado SET nomefantasia = ?, razaosocial = ?, fundacao = ?,  WHERE codigo=?";
-        try {
-            PreparedStatement ps = conexao.Conexao.getConexao().prepareStatement(sql);
-            ps.setString(1, objeto.getNome()); 
-            ps.setString(2, objeto.getDescricao());
-            ps.setInt(3, objeto.getCodigo());
-            ps.executeUpdate();
-            return true;
-        } catch (SQLException | ClassNotFoundException ex) {
-            System.out.println(ex.getMessage());
-            return false;
+      
+      public static void alterar(ManutencaoMercado man){
+        Mercado objeto = new Mercado();
+        //definir todos os atributos
+        objeto.setCodigo(Integer.parseInt(man.jtfCodigo.getText()));
+        objeto.setNomefantasia(man.jtfNomefantasia.getText());
+        objeto.setRazaosocial(man.jtfRazaosocial.getText());
+        objeto.setNrdefuncionarios(Integer.parseInt(man.jtfNrdefuncionarios.getText()));
+        objeto.setFundacao(LocalDate.parse(man.jtfFundacao.getText(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        objeto.setValor(Double.parseDouble(man.jtfValor.getText()));
+        
+        boolean resultado = MercadoDao.alterar(objeto);
+        if (resultado) {
+            JOptionPane.showMessageDialog(null, "Alterado com sucesso!");
+        } else {
+            JOptionPane.showMessageDialog(null, "Erro!");
+        }
+    }
+      
+      public static void excluir(ManutencaoMercado man){
+        Mercado objeto = new Mercado();
+        objeto.setCodigo(Integer.parseInt(man.jtfCodigo.getText())); //só precisa definir a chave primeira
+        
+        boolean resultado;
+        resultado = MercadoDao.excluir(objeto);
+        if (resultado) {
+            JOptionPane.showMessageDialog(null, "Excluído com sucesso!");
+        } else {
+            JOptionPane.showMessageDialog(null, "Erro!");
         }
     }
 }
