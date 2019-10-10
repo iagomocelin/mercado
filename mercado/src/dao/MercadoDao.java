@@ -10,6 +10,9 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import modelo.Mercado;
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 /**
  *
  * @author Administrador
@@ -62,5 +65,58 @@ public class MercadoDao {
             return false;
         }
     }
-
+    
+    public static List<Mercado> consultar() {
+        List<Mercado> resultados = new ArrayList<>();
+        //editar o SQL conforme a entidade
+        String sql = "SELECT codigo, nomefantasia, razaosocial, nrdefuncionarios, fundacao, valor FROM mercado";
+        PreparedStatement ps;
+        try {
+            ps = conexao.Conexao.getConexao().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Mercado objeto = new Mercado();
+                //definir um set para cada atributo da entidade, cuidado com o tipo
+                objeto.setCodigo(rs.getInt("codigo"));
+                objeto.setNomefantasia(rs.getString("nomefantasia"));
+                objeto.setRazaosocial(rs.getString("razaosocial"));
+                objeto.setNrdefuncionarios(rs.getInt("nrdefuncionarios"));
+                objeto.setFundacao(rs.getDate("fundacao").toLocalDate());
+                objeto.setValor(rs.getDouble("valor"));
+                
+                resultados.add(objeto);//não mexa nesse, ele adiciona o objeto na lista
+            }
+            return resultados;
+        } catch (SQLException | ClassNotFoundException ex) {
+            System.out.println(ex.getMessage());
+            return null;
+        }
+    } 
+    
+     public static Mercado consultar(int primaryKey) {
+        //editar o SQL conforme a entidade
+        String sql = "SELECT * FROM mercado WHERE codigo=?";
+        PreparedStatement ps;
+        try {
+            ps = conexao.Conexao.getConexao().prepareStatement(sql);
+            ps.setInt(1, primaryKey);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Mercado objeto = new Mercado();
+                //definir um set para cada atributo da entidade, cuidado com o tipo
+                objeto.setCodigo(rs.getInt("codigo"));
+                objeto.setNomefantasia(rs.getString("nome"));
+                objeto.setRazaosocial(rs.getString("descricao"));
+                objeto.setNrdefuncionarios(rs.getInt("quantidade"));
+                objeto.setFundacao(rs.getDate("fundacao").toLocalDate());
+                objeto.setValor(rs.getDouble("valor"));
+                return objeto;//não mexa nesse, ele adiciona o objeto na lista
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return null;
+    }
+     
+     
 }
